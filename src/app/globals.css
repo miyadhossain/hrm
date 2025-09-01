@@ -22,7 +22,7 @@ body {
 }
 
 .focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900;
+  @apply focus:outline-none focus:ring-2 focus:ring-brand dark:focus:ring-offset-gray-900;
 }
 
 .container-xl {

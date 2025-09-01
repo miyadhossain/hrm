@@ -4,17 +4,26 @@ import Protected from "@/components/auth/Protected";
 import BarChartSimple from "@/components/charts/BarChartSimple";
 import DonutChart from "@/components/charts/DonutChart";
 import Badge from "@/components/ui/Badge";
+import { setSubtitle, setTitle } from "@/features/ui/uiSlice";
+import { useAppDispatch } from "@/lib/store";
 import {
   useGetAttendanceQuery,
   useGetChartsQuery,
   useGetKpisQuery,
 } from "@/services/api";
 import { TrendingDown, TrendingUp } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Dashboard() {
+  const dispatch = useAppDispatch();
   const { data: kpis, isLoading: kLoading } = useGetKpisQuery();
   const { data: charts, isLoading: cLoading } = useGetChartsQuery();
   const { data: attendance, isLoading: aLoading } = useGetAttendanceQuery();
+
+  useEffect(() => {
+    dispatch(setTitle("Hello Alex 👋🏻"));
+    dispatch(setSubtitle("Good Morning"));
+  }, []);
 
   return (
     <Protected>
@@ -95,9 +104,6 @@ export default function Dashboard() {
         </section>
 
         <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xl font-semibold">Employee Attendance</h2>
-          </div>
           {aLoading ? (
             <div className="p-6 text-center">Loading attendance…</div>
           ) : (

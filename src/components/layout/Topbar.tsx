@@ -1,16 +1,14 @@
 "use client";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import { logout } from "@/features/auth/authSlice";
 import { toggleDark } from "@/features/ui/uiSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
-import { Bell, Moon, Sun } from "lucide-react";
+import { Bell, Moon, Search, Sun } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function Topbar() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((s) => s.auth);
-  const { dark } = useAppSelector((s) => s.ui);
+  const { dark, title, subtitle } = useAppSelector((s) => s.ui);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -25,38 +23,53 @@ export default function Topbar() {
   };
 
   return (
-    <header className="h-16 sticky top-0 z-10 bg-white dark:bg-gray-900/70 backdrop-blur border-b border-gray-200 dark:border-gray-800">
+    <header className="h-16 sticky top-0 z-10 bg-white dark:bg-gray-900/70 backdrop-blur">
       <div className="container-xl h-full flex items-center justify-between gap-4">
-        <div className="flex-1 max-w-lg">
-          <Input placeholder="Search..." aria-label="Search" />
+        <div>
+          <h3 className="text-2xl">{title}</h3>
+          <p className="text-sm text-[#8C8CA1]">{subtitle}</p>
         </div>
         <div className="flex items-center gap-3">
+          <div className="flex-1 max-w-lg">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search"
+                className="pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="absolute left-3 top-3">
+                <Search />
+              </span>
+            </div>
+          </div>
           <button
-            className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 focus-ring"
+            className="rounded-xl bg-[#FAFAFB] dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 focus-ring w-[50px] h-[50px] flex justify-center items-center"
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
           </button>
           <button
             onClick={onToggleDark}
-            className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 focus-ring"
+            className="rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 focus-ring w-[50px] h-[50px] flex justify-center items-center"
             aria-label="Toggle dark mode"
           >
             {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
           {mounted &&
-            user && ( // ✅ only render after mount
-              <div className="flex items-center gap-3 pl-3 border-l border-gray-200 dark:border-gray-800">
-                <img
+            user && ( // only render after mount
+              <div className="flex items-center gap-x-3 p-1 border border-gray-200 dark:border-gray-800 rounded-md">
+                <Image
+                  width={40}
+                  height={40}
                   src={user.avatar}
-                  alt=""
-                  className="h-8 w-8 rounded-full"
+                  alt="avatar"
+                  className="rounded-md"
                 />
                 <div className="hidden sm:block leading-tight">
                   <div className="font-medium">{user.name}</div>
                   <div className="text-xs text-gray-500">{user.role}</div>
                 </div>
-                <Button
+                {/* <Button
                   onClick={() => {
                     dispatch(logout());
                     localStorage.removeItem("auth");
@@ -65,7 +78,7 @@ export default function Topbar() {
                   className="ml-2"
                 >
                   Logout
-                </Button>
+                </Button> */}
               </div>
             )}
         </div>

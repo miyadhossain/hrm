@@ -1,7 +1,8 @@
 "use client";
+import { logout } from "@/features/auth/authSlice";
+import { useAppDispatch } from "@/lib/store";
 import clsx from "clsx";
 import {
-  BarChart2,
   BriefcaseBusiness,
   Building2,
   CalendarCheck2,
@@ -9,11 +10,13 @@ import {
   HandCoins,
   LayoutDashboard,
   LifeBuoy,
+  LogOut,
   Settings,
   Star,
   Umbrella,
   Users,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -27,17 +30,20 @@ const items = [
   { href: "/performance", label: "Performance", icon: Star },
   { href: "/leaves", label: "Leaves", icon: Umbrella },
   { href: "/holidays", label: "Holidays", icon: Gift },
-  { href: "/support", label: "Support", icon: LifeBuoy },
-  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   return (
-    <aside className="hidden md:flex sticky top-0 h-screen w-64 flex-col gap-2 p-4 border-r border-gray-200 dark:border-gray-800">
-      <div className="flex items-center gap-2 text-xl font-semibold pb-4">
-        <BarChart2 className="h-6 w-6 text-brand" />
-        AMAR Pos
+    <aside className="hidden md:flex sticky top-0 h-screen w-64 flex-col gap-2 p-4 dark:border-gray-800 bg-[#FAFAFB] dark:bg-gray-800 rounded-2xl">
+      <div className="pb-4">
+        <Image
+          src="/images/Logo.png"
+          width={137}
+          height={49}
+          alt="Betopia Logo"
+        />
       </div>
       <nav className="flex-1 space-y-1">
         {items.map(({ href, label, icon: Icon }) => {
@@ -47,9 +53,9 @@ export default function Sidebar() {
               key={href}
               href={href}
               className={clsx(
-                "flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800",
+                "flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-100 text-sm",
                 active &&
-                  "text-[#F69348] bg-[#FFF2E8] dark:bg-gray-800 font-semibold"
+                  "text-brand bg-[#FFF2E8] dark:bg-gray-800 font-semibold"
               )}
             >
               <Icon className="h-5 w-5" />
@@ -58,7 +64,41 @@ export default function Sidebar() {
           );
         })}
       </nav>
-      <div className="text-xs text-gray-500">© {new Date().getFullYear()}</div>
+
+      <span>Other</span>
+      <nav>
+        <Link
+          href="/"
+          className={clsx(
+            "flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+          )}
+        >
+          <LifeBuoy className="h-5 w-5" />
+          <span>Support</span>
+        </Link>
+        <Link
+          href="/"
+          className={clsx(
+            "flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+          )}
+        >
+          <Settings className="h-5 w-5" />
+          <span>Settings</span>
+        </Link>
+        <span
+          onClick={() => {
+            dispatch(logout());
+            localStorage.removeItem("auth");
+            window.location.href = "/login";
+          }}
+          className={clsx(
+            "flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-sm cursor-pointer text-red-600"
+          )}
+        >
+          <LogOut className="h-5 w-5" />
+          <span>Logout</span>
+        </span>
+      </nav>
     </aside>
   );
 }

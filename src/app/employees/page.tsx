@@ -1,11 +1,30 @@
 "use client";
 
 import Protected from "@/components/auth/Protected";
+import { setSubtitle, setTitle } from "@/features/ui/uiSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { useGetEmployeesQuery } from "@/services/api";
-import { CirclePlus, Search, SlidersHorizontal } from "lucide-react";
+import {
+  CirclePlus,
+  Eye,
+  PenLine,
+  Search,
+  SlidersHorizontal,
+  Trash2,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
 
 const EmployeeTable = () => {
   const { data, isLoading } = useGetEmployeesQuery();
+  const dispatch = useAppDispatch();
+  const { dark } = useAppSelector((s) => s.ui);
+
+  useEffect(() => {
+    dispatch(setTitle("Employees"));
+    dispatch(setSubtitle("Employee Information"));
+  }, []);
 
   return (
     <Protected>
@@ -22,12 +41,15 @@ const EmployeeTable = () => {
             </span>
           </div>
           <div className="flex space-x-4">
-            <button className="bg-[#F69348] text-white px-4 py-2 rounded-lg flex items-center font-semibold">
+            <Link
+              href="/employees/add-new-employee"
+              className="bg-[#F69348] text-white px-4 py-2 rounded-lg flex items-center font-semibold"
+            >
               <span className="mr-2">
                 <CirclePlus />
               </span>{" "}
               Add New Employee
-            </button>
+            </Link>
             <button className="border border-gray-300 px-4 py-2 rounded-lg inline-flex items-center gap-x-2">
               <SlidersHorizontal size={20} /> Filter
             </button>
@@ -38,7 +60,7 @@ const EmployeeTable = () => {
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="text-left text-gray-600">
+              <tr className="text-left text-[#8C8CA1] text-sm">
                 <th className="p-4">Employee Name</th>
                 <th className="p-4">Employee ID</th>
                 <th className="p-4">Department</th>
@@ -50,9 +72,9 @@ const EmployeeTable = () => {
             </thead>
             <tbody>
               {data?.map((employee) => (
-                <tr key={employee.id} className="border-t">
+                <tr key={employee.id} className="border-t text-sm">
                   <td className="p-4 flex items-center">
-                    <img
+                    <Image
                       width={40}
                       height={40}
                       src={employee.imageUrl}
@@ -71,14 +93,14 @@ const EmployeeTable = () => {
                     </span>
                   </td>
                   <td className="p-4 flex space-x-2">
-                    <button className="text-gray-500 hover:text-gray-700">
-                      👁️
+                    <Link href={`/employees/employee-details/${employee.id}`}>
+                      <Eye size={24} color={dark ? "white" : "#16151C"} />
+                    </Link>
+                    <button>
+                      <PenLine size={24} color={dark ? "white" : "#16151C"} />
                     </button>
-                    <button className="text-gray-500 hover:text-gray-700">
-                      ✏️
-                    </button>
-                    <button className="text-gray-500 hover:text-gray-700">
-                      🗑️
+                    <button>
+                      <Trash2 size={24} color={dark ? "white" : "#16151C"} />
                     </button>
                   </td>
                 </tr>
